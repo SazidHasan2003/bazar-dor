@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function Hero() {
-  // Navbar-er moto dynamic and latest date in Bangla
   const currentDateBn = new Date().toLocaleDateString("bn-BD", {
     weekday: "long",
     day: "numeric",

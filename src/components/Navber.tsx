@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import PriceTicker from "./PriceTicker";
+import CurrentDate from "./CurrentDate";
 
 // Interfaces
 interface Category {
@@ -8,6 +9,13 @@ interface Category {
   slug: string;
   nameBn: string;
   icon: string;
+}
+
+interface MarketItem {
+  market: string;
+  division: string;
+  min: number;
+  max: number;
 }
 
 interface Product {
@@ -27,7 +35,7 @@ interface Product {
     dir: "up" | "down";
     pct: number;
   };
-  markets: any[];
+  markets: MarketItem[];
 }
 
 // Fetch Categories
@@ -74,14 +82,6 @@ export default async function Navbar() {
   const categories = await getCategories();
   const products = await getProducts();
 
-  // Auto update to latest current date in Bangla
-  const currentDateBn = new Date().toLocaleDateString("bn-BD", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
   return (
     <header className="w-full bg-white border-b border-gray-200">
       <div className="max-w-[1200px] mx-auto px-4">
@@ -102,7 +102,7 @@ export default async function Navbar() {
                 বাজার দর
               </h1>
               <p className="text-xs sm:text-sm text-gray-500 font-medium capitalize">
-                {currentDateBn}
+                <CurrentDate />
               </p>
             </div>
           </div>
@@ -114,12 +114,15 @@ export default async function Navbar() {
             >
               সাইন ইন
             </button>
-            <button
-              type="button"
-              className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base font-semibold text-white bg-[#008848] hover:bg-[#00733d] rounded-xl shadow-sm transition-all"
-            >
-              সাইন আপ
-            </button>
+
+            <Link href="/sign-up">
+              <button
+                type="button"
+                className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base font-semibold text-white bg-[#008848] hover:bg-[#00733d] rounded-xl shadow-sm transition-all"
+              >
+                সাইন আপ
+              </button>
+            </Link>
           </div>
         </div>
       </div>

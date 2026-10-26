@@ -1,14 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import CurrentDate from "./CurrentDate";
 
 export default function Hero() {
-  const currentDateBn = new Date().toLocaleDateString("bn-BD", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
   return (
     <section className="w-full max-w-[1200px] mx-auto px-4 my-[40px]">
       <div className="bg-[#f9fafb] border border-gray-100 rounded-3xl p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-sm">
@@ -16,7 +10,7 @@ export default function Hero() {
         <div className="flex-1 text-center lg:text-left space-y-4">
           {/* Date Badge */}
           <div className="inline-block bg-[#e6f4ea] text-[#008848] px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold">
-            {currentDateBn}
+            <CurrentDate />
           </div>
 
           {/* Heading */}
@@ -27,7 +21,7 @@ export default function Hero() {
           {/* Description */}
           <p className="text-gray-600 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed">
             চাল, ডাল, তেল, সবজি, মাছ, মাংস, ডিম ও মসলার দাম — বাজারভিত্তিক
-            বিস্তারিত, গড়, সর্বনিম্ন, সর্বাধিক এবং দামের পরিবর্তন এক জায়গায়।
+            বিস্তারিত, গড়, সর্বনিম্ন, সর্বাধিক এবং দামের পরিবর্তন এক জায়গায়।
           </p>
 
           {/* Action Button */}

@@ -1,11 +1,71 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignUpPage() {
+  const router = useRouter();
+
+  // ১. Form Input States
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // UI & Loading States
+  const [loading, setLoading] = useState(false);
+
+  // ২. Sign Up Submit Handler
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // পাসওয়ার্ড নিশ্চিত করার চেক
+    if (password !== confirmPassword) {
+      toast.error("পাসওয়ার্ড দুটি মিলছে না!");
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.error("পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।");
+      return;
+    }
+
+    setLoading(true);
+
+    // Better Auth Client Call
+    await authClient.signUp.email(
+      {
+        email,
+        password,
+        name,
+      },
+      {
+        onSuccess: () => {
+          setLoading(false);
+          toast.success("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
+          setTimeout(() => {
+            router.push("/"); // সফল হলে হোম পেজে রিডাইরেক্ট
+            router.refresh();
+          }, 1500); // টোস্ট মেসেজ দেখার জন্য সামান্য ডিলে রাখা হলো
+        },
+        onError: (ctx) => {
+          setLoading(false);
+          toast.error(ctx.error.message || "সাইন আপ করতে সমস্যা হয়েছে");
+        },
+      },
+    );
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Toast Notification Container */}
+      <ToastContainer position="top-right" autoClose={3000} />
+
       {/* Main Header Title */}
       <div className="text-center mb-8">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
@@ -18,7 +78,7 @@ export default function SignUpPage() {
 
       {/* Form Container Card */}
       <div className="max-w-md w-full bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-4" onSubmit={handleSignUp}>
           {/* Name Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -26,6 +86,9 @@ export default function SignUpPage() {
             </label>
             <input
               type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="যেমন: রহিম উদ্দিন"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008848] text-sm text-gray-900 placeholder:text-gray-400"
             />
@@ -38,6 +101,9 @@ export default function SignUpPage() {
             </label>
             <input
               type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008848] text-sm text-gray-900 placeholder:text-gray-400"
             />
@@ -50,6 +116,9 @@ export default function SignUpPage() {
             </label>
             <input
               type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="কমপক্ষে ৮ অক্ষর"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008848] text-sm text-gray-900 placeholder:text-gray-400"
             />
@@ -62,6 +131,9 @@ export default function SignUpPage() {
             </label>
             <input
               type="password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="আবার লিখুন"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008848] text-sm text-gray-900 placeholder:text-gray-400"
             />
@@ -71,9 +143,10 @@ export default function SignUpPage() {
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full bg-[#008848] hover:bg-[#00733d] text-white font-semibold py-3 rounded-xl shadow-md transition-all text-base"
+              disabled={loading}
+              className="w-full bg-[#008848] hover:bg-[#00733d] disabled:opacity-50 text-white font-semibold py-3 rounded-xl shadow-md transition-all text-base cursor-pointer"
             >
-              অ্যাকাউন্ট তৈরি করুন
+              {loading ? "অ্যাকাউন্ট তৈরি হচ্ছে..." : "অ্যাকাউন্ট তৈরি করুন"}
             </button>
           </div>
         </form>
@@ -90,11 +163,11 @@ export default function SignUpPage() {
           </div>
         </div>
 
-        {/* Social Login Buttons with Google.png & github.png */}
+        {/* Social Login Buttons */}
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
-            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm"
+            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm cursor-pointer"
           >
             <Image
               src="/Google.png"
@@ -107,7 +180,7 @@ export default function SignUpPage() {
           </button>
           <button
             type="button"
-            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm"
+            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm cursor-pointer"
           >
             <Image
               src="/github.png"

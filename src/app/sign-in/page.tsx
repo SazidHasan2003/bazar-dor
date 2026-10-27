@@ -1,11 +1,55 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignInPage() {
+  const router = useRouter();
+
+  // ১. Form Input States
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // UI & Loading States
+  const [loading, setLoading] = useState(false);
+
+  // ২. Sign In Submit Handler
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    await authClient.signIn.email(
+      {
+        email,
+        password,
+      },
+      {
+        onSuccess: () => {
+          setLoading(false);
+          toast.success("সফলভাবে সাইন ইন হয়েছে!");
+          setTimeout(() => {
+            router.push("/"); // সফল হলে হোম পেজে রিডাইরেক্ট
+            router.refresh();
+          }, 1500);
+        },
+        onError: (ctx) => {
+          setLoading(false);
+          toast.error(ctx.error.message || "ইমেইল বা পাসওয়ার্ড ভুল হয়েছে");
+        },
+      },
+    );
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Toast Notification Container */}
+      <ToastContainer position="top-right" autoClose={3000} />
+
       {/* Main Header Title */}
       <div className="text-center mb-8">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
@@ -18,7 +62,7 @@ export default function SignInPage() {
 
       {/* Form Container Card */}
       <div className="max-w-md w-full bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-4" onSubmit={handleSignIn}>
           {/* Email Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -26,6 +70,9 @@ export default function SignInPage() {
             </label>
             <input
               type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008848] text-sm text-gray-900 placeholder:text-gray-400"
             />
@@ -38,6 +85,9 @@ export default function SignInPage() {
             </label>
             <input
               type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="কমপক্ষে ৮ অক্ষর"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008848] text-sm text-gray-900 placeholder:text-gray-400"
             />
@@ -47,9 +97,10 @@ export default function SignInPage() {
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full bg-[#008848] hover:bg-[#00733d] text-white font-semibold py-3 rounded-xl shadow-md transition-all text-base"
+              disabled={loading}
+              className="w-full bg-[#008848] hover:bg-[#00733d] disabled:opacity-50 text-white font-semibold py-3 rounded-xl shadow-md transition-all text-base cursor-pointer"
             >
-              সাইন ইন
+              {loading ? "সাইন ইন হচ্ছে..." : "সাইন ইন"}
             </button>
           </div>
         </form>
@@ -66,11 +117,11 @@ export default function SignInPage() {
           </div>
         </div>
 
-        {/* Social Login Buttons with Google.png & github.png */}
+        {/* Social Login Buttons */}
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
-            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm"
+            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm cursor-pointer"
           >
             <Image
               src="/Google.png"
@@ -83,7 +134,7 @@ export default function SignInPage() {
           </button>
           <button
             type="button"
-            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm"
+            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm cursor-pointer"
           >
             <Image
               src="/github.png"

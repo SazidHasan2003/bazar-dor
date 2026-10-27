@@ -2,8 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import PriceTicker from "./PriceTicker";
 import CurrentDate from "./CurrentDate";
-
-// Interfaces
+import NavAuthMenu from "./NavAuthMenu";
 interface Category {
   id: string;
   slug: string;
@@ -107,26 +106,7 @@ export default async function Navbar() {
             </div>
           </div>
 
-          {/* Auth Buttons with Proper Links & Clickable Hover */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            <Link href="/sign-in">
-              <button
-                type="button"
-                className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base font-medium text-gray-800 hover:text-gray-900 transition-colors cursor-pointer"
-              >
-                সাইন ইন
-              </button>
-            </Link>
-
-            <Link href="/sign-up">
-              <button
-                type="button"
-                className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base font-semibold text-white bg-[#008848] hover:bg-[#00733d] rounded-xl shadow-sm transition-all cursor-pointer"
-              >
-                সাইন আপ
-              </button>
-            </Link>
-          </div>
+          <NavAuthMenu />
         </div>
       </div>
 

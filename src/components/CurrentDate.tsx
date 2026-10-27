@@ -1,16 +1,3 @@
-// "use client";
-
-// export default function CurrentDate() {
-//   const currentDateBn = new Date().toLocaleDateString("bn-BD", {
-//     weekday: "long",
-//     day: "numeric",
-//     month: "long",
-//     year: "numeric",
-//   });
-
-//   return <span>{currentDateBn}</span>;
-// }
-
 "use client";
 
 import { useState, useEffect } from "react";

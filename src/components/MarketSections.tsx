@@ -99,7 +99,7 @@ export default async function MarketSections() {
         </section>
       )}
 
-      <section>
+      <section id="all-products" className="scroll-mt-8">
         <div className="mb-6">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
             সব পণ্য

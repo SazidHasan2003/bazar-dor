@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import CurrentDate from "./CurrentDate";
+import { Suspense } from "react";
 
 export default function Hero() {
   return (
@@ -10,7 +11,9 @@ export default function Hero() {
         <div className="flex-1 text-center lg:text-left space-y-4">
           {/* Date Badge */}
           <div className="inline-block bg-[#e6f4ea] text-[#008848] px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold">
-            <CurrentDate />
+            <Suspense fallback={<span>তারিখ লোড হচ্ছে...</span>}>
+              <CurrentDate />
+            </Suspense>
           </div>
 
           {/* Heading */}
@@ -27,7 +30,7 @@ export default function Hero() {
           {/* Action Button */}
           <div className="pt-2">
             <Link
-              href="/products"
+              href="#all-products"
               className="inline-block bg-[#008848] hover:bg-[#00733d] text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all text-sm sm:text-base"
             >
               সব পণ্য দেখুন

@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 interface MarketItem {
   market: string;
@@ -28,35 +32,143 @@ interface ProductDetail {
   markets: MarketItem[];
 }
 
-async function getProductDetail(id: string): Promise<ProductDetail | null> {
-  try {
-    const res = await fetch(
-      `https://openapi.programming-hero.com/api/bazardor/products/${id}`,
-      {
-        next: { revalidate: 0 },
-      },
+export default function ProductDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const id = params?.id as string;
+
+  const { data: session, isPending: isSessionPending } =
+    authClient.useSession();
+
+  const [product, setProduct] = useState<ProductDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isSessionPending && !session) {
+      router.push("/sign-in");
+      return;
+    }
+
+    if (session && id) {
+      async function fetchProduct() {
+        try {
+          const res = await fetch(
+            `https://openapi.programming-hero.com/api/bazardor/products/${id}`,
+          );
+          if (!res.ok) {
+            setLoading(false);
+            return;
+          }
+          const data = await res.json();
+          if (data?.data) {
+            setProduct(data.data);
+          } else if (data?.id) {
+            setProduct(data);
+          }
+        } catch (error) {
+          console.error("Error fetching product detail:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      fetchProduct();
+    }
+  }, [session, isSessionPending, id, router]);
+
+  if (isSessionPending || loading) {
+    return (
+      <div className="min-h-screen bg-white py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1200px] mx-auto space-y-6 animate-pulse">
+          {/* Breadcrumb Skeleton */}
+          <div className="flex items-center gap-2">
+            <div className="h-4 bg-gray-200 rounded w-12" />
+            <div className="h-4 bg-gray-200 rounded w-4" />
+            <div className="h-4 bg-gray-200 rounded w-16" />
+            <div className="h-4 bg-gray-200 rounded w-4" />
+            <div className="h-4 bg-gray-200 rounded w-28" />
+          </div>
+
+          {/* Top Banner Skeleton */}
+          <div className="bg-[#FAFAFA] border border-gray-200/85 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4 flex-1 w-full">
+              <div className="w-20 h-20 bg-gray-200 rounded-2xl shrink-0" />
+              <div className="space-y-2 flex-1">
+                <div className="h-7 bg-gray-200 rounded-lg w-1/2 sm:w-1/3" />
+                <div className="h-4 bg-gray-200 rounded-lg w-1/3 sm:w-1/4" />
+                <div className="h-4 bg-gray-200 rounded-lg w-2/3 sm:w-1/2" />
+              </div>
+            </div>
+
+            <div className="bg-white border border-gray-200/80 rounded-2xl p-4 min-w-[160px] h-28 self-stretch md:self-auto flex flex-col justify-center items-center space-y-2">
+              <div className="h-3 bg-gray-200 rounded w-16" />
+              <div className="h-8 bg-gray-200 rounded w-20" />
+              <div className="h-3 bg-gray-200 rounded w-24" />
+            </div>
+          </div>
+
+          {/* Summary Cards Skeleton */}
+          <div className="space-y-3">
+            <div className="h-6 bg-gray-200 rounded-lg w-36" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[1, 2, 3].map((item) => (
+                <div
+                  key={item}
+                  className="bg-[#FAFAFA] border border-gray-200/85 rounded-2xl p-5 shadow-sm space-y-2"
+                >
+                  <div className="h-3 bg-gray-200 rounded w-20" />
+                  <div className="h-7 bg-gray-200 rounded-lg w-28" />
+                  <div className="h-3 bg-gray-200 rounded w-3/4" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Table Skeleton */}
+          <div className="space-y-3 pt-2">
+            <div className="h-6 bg-gray-200 rounded-lg w-48" />
+            <div className="bg-[#FAFAFA] border border-gray-200/85 rounded-2xl p-4 shadow-sm space-y-4">
+              <div className="grid grid-cols-5 gap-4 border-b border-gray-200 pb-3">
+                <div className="h-4 bg-gray-200 rounded" />
+                <div className="h-4 bg-gray-200 rounded" />
+                <div className="h-4 bg-gray-200 rounded" />
+                <div className="h-4 bg-gray-200 rounded" />
+                <div className="h-4 bg-gray-200 rounded" />
+              </div>
+              {[1, 2, 3, 4, 5].map((row) => (
+                <div key={row} className="grid grid-cols-5 gap-4 py-1">
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                  <div className="h-4 bg-gray-200 rounded w-1/2" />
+                  <div className="h-4 bg-gray-200 rounded w-2/3" />
+                  <div className="h-4 bg-gray-200 rounded w-2/3" />
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     );
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (data?.data) return data.data;
-    if (data?.id) return data;
-    return null;
-  } catch (error) {
-    console.error("Error fetching product detail:", error);
+  }
+
+  if (!session) {
     return null;
   }
-}
-
-export default async function ProductDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const product = await getProductDetail(id);
 
   if (!product) {
-    notFound();
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center space-y-4">
+        <p className="text-gray-600 text-base font-medium">
+          পণ্যটি পাওয়া যায়নি।
+        </p>
+        <Link
+          href="/"
+          className="text-sm text-[#008848] font-semibold hover:underline"
+        >
+          ← হোম পেজে ফিরে যান
+        </Link>
+      </div>
+    );
   }
 
   const formatNumber = (num: number) => num.toLocaleString("bn-BD");
@@ -97,6 +209,7 @@ export default async function ProductDetailPage({
   return (
     <div className="min-h-screen bg-white py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[1200px] mx-auto space-y-6">
+        {/* Breadcrumb Navigation */}
         <div className="text-xs sm:text-sm text-gray-500 flex items-center gap-2 flex-wrap">
           <Link href="/" className="hover:text-gray-900">
             হোম
@@ -112,6 +225,7 @@ export default async function ProductDetailPage({
           <span className="text-gray-900 font-medium">{product.nameBn}</span>
         </div>
 
+        {/* Top Banner Card */}
         <div className="bg-[#FAFAFA] border border-gray-200/85 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <span className="text-4xl sm:text-5xl p-4 bg-white rounded-2xl shadow-sm border border-gray-100 shrink-0">
@@ -137,6 +251,7 @@ export default async function ProductDetailPage({
             </div>
           </div>
 
+          {/* Right Price Badge Box */}
           <div className="bg-white border border-gray-200/80 rounded-2xl p-4 text-center min-w-[160px] shadow-sm self-stretch md:self-auto flex flex-col justify-center">
             <span className="text-xs text-gray-400 font-medium block">
               আজকের দাম

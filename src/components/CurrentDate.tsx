@@ -1,24 +1,37 @@
-"use client";
+// "use client";
 
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 
-export default function CurrentDate() {
-  const [currentDateBn, setCurrentDateBn] = useState<string>("");
+// export default function CurrentDate() {
+//   const [currentDateBn, setCurrentDateBn] = useState<string>("");
 
-  useEffect(() => {
-    const dateStr = new Date().toLocaleDateString("bn-BD", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-    setCurrentDateBn(dateStr);
-  }, []);
+//   useEffect(() => {
+//     const dateStr = new Date().toLocaleDateString("bn-BD", {
+//       weekday: "long",
+//       day: "numeric",
+//       month: "long",
+//       year: "numeric",
+//     });
+//     setCurrentDateBn(dateStr);
+//   }, []);
 
-  // সার্ভার সাইড বা ইনিশিয়াল রেন্ডারে একটি স্ট্যাটিক টেক্সট দেখাবে, যা পরবর্তীতে ক্লায়েন্টে আপডেট হয়ে যাবে
-  if (!currentDateBn) {
-    return <span>লোড হচ্ছে...</span>;
-  }
+//   if (!currentDateBn) {
+//     return <span>লোড হচ্ছে...</span>;
+//   }
 
-  return <span>{currentDateBn}</span>;
+//   return <span>{currentDateBn}</span>;
+// }
+import { connection } from "next/server";
+
+export default async function CurrentDate() {
+  await connection();
+
+  const dateStr = new Date().toLocaleDateString("bn-BD", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  return <span>{dateStr}</span>;
 }

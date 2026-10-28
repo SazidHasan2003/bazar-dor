@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import PriceTicker from "./PriceTicker";
 import CurrentDate from "./CurrentDate";
 import NavAuthMenu from "./NavAuthMenu";
+import CategoryNav from "./CategoryNav";
 
 interface Category {
   id: string;
@@ -105,7 +107,9 @@ export default async function Navbar() {
                 বাজার দর
               </h1>
               <p className="text-xs sm:text-sm text-gray-500 font-medium capitalize">
-                <CurrentDate />
+                <Suspense fallback={<span>তারিখ লোড হচ্ছে...</span>}>
+                  <CurrentDate />
+                </Suspense>
               </p>
             </div>
           </Link>
@@ -116,35 +120,7 @@ export default async function Navbar() {
 
       <div className="border-t border-gray-100">
         <div className="max-w-[1200px] mx-auto px-4">
-          <nav className="py-3 overflow-x-auto scrollbar-none">
-            {categories.length > 0 ? (
-              <ul className="flex items-center gap-6 sm:gap-8 whitespace-nowrap min-w-max">
-                {categories.map((cat, index) => {
-                  const isActive = index === 0;
-
-                  return (
-                    <li key={cat.id || index}>
-                      <Link
-                        href={`/category/${cat.slug}`}
-                        className={`flex items-center gap-2 text-sm sm:text-base font-medium transition-all pb-1 border-b-2 ${
-                          isActive
-                            ? "text-gray-900 border-[#008848] font-semibold"
-                            : "text-gray-600 border-transparent hover:text-gray-900"
-                        }`}
-                      >
-                        <span className="text-lg">{cat.icon}</span>
-                        <span>{cat.nameBn}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <div className="py-2 text-center text-gray-500 text-sm font-medium">
-                ডাটা পাওয়া যায় নি
-              </div>
-            )}
-          </nav>
+          <CategoryNav categories={categories} />
         </div>
       </div>
 

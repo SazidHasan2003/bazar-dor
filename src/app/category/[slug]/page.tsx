@@ -101,7 +101,6 @@ export default async function CategoryPage({
             <span className="text-xs sm:text-sm text-gray-500 font-medium">
               সাজান
             </span>
-            {/* আলাদা করা ক্লায়েন্ট কম্পোনেন্ট */}
             <SortDropdown defaultValue={sort} />
           </div>
         </div>
@@ -112,6 +111,7 @@ export default async function CategoryPage({
             {sortedProducts.map((product) => (
               <ProductCard
                 key={product.id}
+                id={product.id}
                 image={product.image}
                 nameBn={product.nameBn}
                 unit={product.unit}

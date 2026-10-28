@@ -1,36 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BazarDor (বাজার দর)
 
-## Getting Started
+## Description
 
-First, run the development server:
+BazarDor is a modern and responsive web application designed to track and monitor real-time daily market prices for essential commodities such as rice, lentils, oil, vegetables, fish, and meat. It provides users with accurate price updates and highlights market trends to keep them informed about daily grocery fluctuations.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technologies Used
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Framework:** Next.js (App Router, Turbopack)
+- **Styling:** Tailwind CSS
+- **Authentication:** Better Auth (MongoDB Adapter)
+- **Database:** MongoDB Atlas
+- **Notifications:** React Toastify
+- **Deployment:** Vercel
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 5 Key Features of the Project
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Real-Time Price Tracking:** Browse current market prices for essential daily commodities categorized neatly for quick access.
+2. **Price Fluctuation Insights:** Easily identify items with rising or falling prices (`আজ দাম বেড়েছে` and `आज দাম কমেছে`) accompanied by clear percentage change indicators.
+3. **Secure Authentication:** Robust user authentication system powered by Better Auth supporting secure sign-in and sign-up workflows.
+4. **Optimized Performance & Skeleton Loaders:** Fully responsive mobile and desktop layout equipped with smooth skeleton loaders to prevent UI freezing during data fetches.
+5. **Custom Error Handling:** A beautifully styled custom 404 Not Found page matching the application's core theme for seamless error navigation.
 
-## Learn More
+## 🔗 Live Link
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+👉 **[https://bazar-dor-5laf.vercel.app/](https://bazar-dor-5laf.vercel.app/)**

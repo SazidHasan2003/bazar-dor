@@ -2,9 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "react-toastify";
 
 export default function NavAuthMenu() {
+  const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -26,7 +29,15 @@ export default function NavAuthMenu() {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          window.location.href = "/";
+          toast.success("আপনি সফলভাবে লগআউট করেছেন!");
+
+          setTimeout(() => {
+            router.push("/");
+            router.refresh();
+          }, 1000);
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message || "লগআউট করতে সমস্যা হয়েছে");
         },
       },
     });

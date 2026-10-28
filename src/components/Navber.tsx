@@ -81,8 +81,10 @@ async function getProducts(): Promise<Product[]> {
 }
 
 export default async function Navbar() {
-  const categories = await getCategories();
-  const products = await getProducts();
+  const [categories, products] = await Promise.all([
+    getCategories(),
+    getProducts(),
+  ]);
 
   return (
     <header className="w-full bg-white border-b border-gray-200">
@@ -114,13 +116,22 @@ export default async function Navbar() {
             </div>
           </Link>
 
+          {/* Auth Menu */}
           <NavAuthMenu />
         </div>
       </div>
 
       <div className="border-t border-gray-100">
         <div className="max-w-[1200px] mx-auto px-4">
-          <CategoryNav categories={categories} />
+          <Suspense
+            fallback={
+              <div className="py-3 text-sm text-gray-400">
+                ক্যাটাগরি লোড হচ্ছে...
+              </div>
+            }
+          >
+            <CategoryNav categories={categories} />
+          </Suspense>
         </div>
       </div>
 

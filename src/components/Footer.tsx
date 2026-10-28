@@ -1,0 +1,13 @@
+export default function Footer() {
+  return (
+    <footer className="bg-white border-t border-gray-200/80 mt-auto py-6 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-gray-500 text-center sm:text-left">
+        {/* Left text */}
+        <p>বাজার দর — প্রয়োজনীয় পণ্যের দাম এক নজরে।</p>
+
+        {/* Right text */}
+        <p>সকল দাম সম্ভাব্য; বাজার অবস্থার ওপর নির্ভর করে পরিবর্তিত হয়।</p>
+      </div>
+    </footer>
+  );
+}

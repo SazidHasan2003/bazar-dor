@@ -33,7 +33,7 @@ export default function SignInPage() {
           setLoading(false);
           toast.success("সফলভাবে সাইন ইন হয়েছে!");
           setTimeout(() => {
-            router.push("/"); // সফল হলে হোম পেজে রিডাইরেক্ট
+            router.push("/");
             router.refresh();
           }, 1500);
         },
@@ -43,6 +43,20 @@ export default function SignInPage() {
         },
       },
     );
+  };
+
+  const handleGoogleAuth = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+  };
+
+  const handleGithubAuth = async () => {
+    const data = await authClient.signIn.social({
+      provider: "github",
+      callbackURL: "/",
+    });
   };
 
   return (
@@ -120,6 +134,7 @@ export default function SignInPage() {
         {/* Social Login Buttons */}
         <div className="grid grid-cols-2 gap-3">
           <button
+            onClick={handleGoogleAuth}
             type="button"
             className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm cursor-pointer"
           >
@@ -133,6 +148,7 @@ export default function SignInPage() {
             <span>Google দিয়ে</span>
           </button>
           <button
+            onClick={handleGithubAuth}
             type="button"
             className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm cursor-pointer"
           >

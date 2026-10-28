@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { ToastContainer, toast } from "react-toastify";
@@ -15,6 +15,12 @@ export default function ProfilePage() {
   const [name, setName] = useState(session?.user?.name ?? "");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/sign-in");
+    }
+  }, [session, isPending, router]);
+
   if (isPending) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-500">
@@ -24,7 +30,6 @@ export default function ProfilePage() {
   }
 
   if (!session) {
-    router.push("/sign-in");
     return null;
   }
 
@@ -39,12 +44,12 @@ export default function ProfilePage() {
       {
         onSuccess: () => {
           setLoading(false);
-          toast.success("প্রোফাইল সফলভাবে আপডেট হয়েছে!");
+          toast.success("প্রোফাইল সফলভাবে আপডেট হয়েছে!");
           refetch();
         },
         onError: (ctx) => {
           setLoading(false);
-          toast.error(ctx.error.message || "আপডেট করতে সমস্যা হয়েছে");
+          toast.error(ctx.error.message || "আপডেট করতে সমস্যা হয়েছে");
         },
       },
     );
@@ -66,7 +71,6 @@ export default function ProfilePage() {
       <ToastContainer position="top-right" autoClose={3000} />
 
       <div className="max-w-2xl mx-auto space-y-6">
-        {/* Header Title */}
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
             আমার প্রোফাইল
@@ -124,7 +128,7 @@ export default function ProfilePage() {
               </label>
               <input
                 type="text"
-                value={name || session.user.name}
+                defaultValue={session.user.name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008848] text-sm text-gray-900 shadow-sm"
                 required
@@ -143,7 +147,6 @@ export default function ProfilePage() {
           </form>
         </div>
 
-        {/* Back Home Link */}
         <div className="pt-2">
           <Link
             href="/"

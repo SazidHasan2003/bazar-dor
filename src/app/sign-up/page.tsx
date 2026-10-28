@@ -24,7 +24,6 @@ export default function SignUpPage() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // পাসওয়ার্ড নিশ্চিত করার চেক
     if (password !== confirmPassword) {
       toast.error("পাসওয়ার্ড দুটি মিলছে না!");
       return;
@@ -49,9 +48,9 @@ export default function SignUpPage() {
           setLoading(false);
           toast.success("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
           setTimeout(() => {
-            router.push("/"); // সফল হলে হোম পেজে রিডাইরেক্ট
+            router.push("/");
             router.refresh();
-          }, 1500); // টোস্ট মেসেজ দেখার জন্য সামান্য ডিলে রাখা হলো
+          }, 1500);
         },
         onError: (ctx) => {
           setLoading(false);
@@ -59,6 +58,20 @@ export default function SignUpPage() {
         },
       },
     );
+  };
+
+  const handleGoogleAuth = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+  };
+
+  const handleGithubAuth = async () => {
+    const data = await authClient.signIn.social({
+      provider: "github",
+      callbackURL: "/",
+    });
   };
 
   return (
@@ -166,6 +179,7 @@ export default function SignUpPage() {
         {/* Social Login Buttons */}
         <div className="grid grid-cols-2 gap-3">
           <button
+            onClick={handleGoogleAuth}
             type="button"
             className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm cursor-pointer"
           >
@@ -179,6 +193,7 @@ export default function SignUpPage() {
             <span>Google দিয়ে</span>
           </button>
           <button
+            onClick={handleGithubAuth}
             type="button"
             className="flex items-center justify-center gap-2 py-2.5 px-3 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 transition-all shadow-sm cursor-pointer"
           >
